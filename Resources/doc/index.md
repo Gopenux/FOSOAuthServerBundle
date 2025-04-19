@@ -3,7 +3,7 @@ Getting Started With FOSOAuthServerBundle
 
 ## Prerequisites
 
-This version of the bundle requires Symfony 6
+This version of the bundle requires Symfony 7
 
 #### Translations
 
