@@ -1,3 +1,5 @@
+lang: "en"
+title: "authentication"
 authorize:
-    accept: Allow
-    reject: Deny
+    accept: "Allow"
+    reject: "Deny"
