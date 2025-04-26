@@ -15,6 +15,7 @@ namespace FOS\OAuthServerBundle\Tests\Util;
 
 use FOS\OAuthServerBundle\Util\Random;
 use phpmock\phpunit\PHPMock;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,14 +27,7 @@ class RandomTest extends TestCase
 {
     use PHPMock;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testGenerateTokenWillUseRandomBytesIfAvailable(): void
     {
         $hashResult = \random_bytes(32);

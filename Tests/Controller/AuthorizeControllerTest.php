@@ -460,14 +460,17 @@ class AuthorizeControllerTest extends TestCase
         $propertyReflection->setAccessible(true);
         $propertyReflection->setValue($this->instance, $this->client);
 
-
+        $invocations = [
+            [ new OAuthEvent($this->user, $this->client), OAuthEvent::PRE_AUTHORIZATION_PROCESS ],
+            [ new OAuthEvent($this->user, $this->client, true), OAuthEvent::POST_AUTHORIZATION_PROCESS ]
+        ];
         $this->eventDispatcher
-            ->expects($this->exactly(2))
+            ->expects($matcher = $this->exactly(count($invocations)))
             ->method('dispatch')
-            ->withConsecutive(
-                [ new OAuthEvent($this->user, $this->client), OAuthEvent::PRE_AUTHORIZATION_PROCESS ],
-                [ new OAuthEvent($this->user, $this->client, true), OAuthEvent::POST_AUTHORIZATION_PROCESS ]
-            )
+            ->with( $this->callback( function ( ...$args ) use ( &$invocations, $matcher ) {
+                $this->assertEquals( $args, $invocations[$matcher->numberOfInvocations()-1] );
+                return true;
+            } ) )
             ->willReturn($this->event)
         ;
 

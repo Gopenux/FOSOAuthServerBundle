@@ -78,7 +78,7 @@ class OAuthStorageTest extends TestCase
         $this->clientManager->expects($this->once())
             ->method('findClientByPublicId')
             ->with('123_abc')
-            ->will($this->returnValue($client))
+            ->willReturn($client)
         ;
 
         $this->assertSame($client, $this->storage->getClient('123_abc'));
@@ -89,7 +89,7 @@ class OAuthStorageTest extends TestCase
         $this->clientManager->expects($this->once())
             ->method('findClientByPublicId')
             ->with('123_abc')
-            ->will($this->returnValue(null))
+            ->willReturn(null)
         ;
 
         $this->assertNull($this->storage->getClient('123_abc'));
@@ -129,7 +129,7 @@ class OAuthStorageTest extends TestCase
         $this->accessTokenManager->expects($this->once())
             ->method('findTokenByToken')
             ->with('123_abc')
-            ->will($this->returnValue($token))
+            ->willReturn($token)
         ;
 
         $this->assertSame($token, $this->storage->getAccessToken('123_abc'));
@@ -140,7 +140,7 @@ class OAuthStorageTest extends TestCase
         $this->accessTokenManager->expects($this->once())
             ->method('findTokenByToken')
             ->with('123_abc')
-            ->will($this->returnValue(null))
+            ->willReturn(null)
         ;
 
         $this->assertNull($this->storage->getAccessToken('123_abc'));
@@ -164,13 +164,13 @@ class OAuthStorageTest extends TestCase
         $this->accessTokenManager->expects($this->once())
             ->method('createToken')
             ->with()
-            ->will($this->returnValue(new AccessToken()))
+            ->willReturn(new AccessToken())
         ;
         $this->accessTokenManager->expects($this->once())
             ->method('updateToken')
-            ->will($this->returnCallback(function ($token) use (&$savedToken) {
+            ->willReturnCallback(function ($token) use (&$savedToken) {
                 $savedToken = $token;
-            }))
+            })
         ;
 
         $client = new Client();
@@ -195,13 +195,13 @@ class OAuthStorageTest extends TestCase
         $this->accessTokenManager->expects($this->once())
             ->method('createToken')
             ->with()
-            ->will($this->returnValue(new AccessToken()))
+            ->willReturn(new AccessToken())
         ;
         $this->accessTokenManager->expects($this->once())
             ->method('updateToken')
-            ->will($this->returnCallback(function ($token) use (&$savedToken) {
+            ->willReturnCallback(function ($token) use (&$savedToken) {
                 $savedToken = $token;
-            }))
+            })
         ;
 
         $client = new Client();
@@ -219,7 +219,7 @@ class OAuthStorageTest extends TestCase
         $this->refreshTokenManager->expects($this->once())
             ->method('findTokenByToken')
             ->with('123_abc')
-            ->will($this->returnValue($token))
+            ->willReturn($token)
         ;
 
         $this->assertSame($token, $this->storage->getRefreshToken('123_abc'));
@@ -230,7 +230,7 @@ class OAuthStorageTest extends TestCase
         $this->refreshTokenManager->expects($this->once())
             ->method('findTokenByToken')
             ->with('123_abc')
-            ->will($this->returnValue(null))
+            ->willReturn(null)
         ;
 
         $this->assertNull($this->storage->getRefreshToken('123_abc'));
@@ -254,13 +254,13 @@ class OAuthStorageTest extends TestCase
         $this->refreshTokenManager->expects($this->once())
             ->method('createToken')
             ->with()
-            ->will($this->returnValue(new RefreshToken()))
+            ->willReturn(new RefreshToken())
         ;
         $this->refreshTokenManager->expects($this->once())
             ->method('updateToken')
-            ->will($this->returnCallback(function ($token) use (&$savedToken) {
+            ->willReturnCallback(function ($token) use (&$savedToken) {
                 $savedToken = $token;
-            }))
+            })
         ;
 
         $client = new Client();
@@ -285,13 +285,13 @@ class OAuthStorageTest extends TestCase
         $this->refreshTokenManager->expects($this->once())
             ->method('createToken')
             ->with()
-            ->will($this->returnValue(new RefreshToken()))
+            ->willReturn(new RefreshToken())
         ;
         $this->refreshTokenManager->expects($this->once())
             ->method('updateToken')
-            ->will($this->returnCallback(function ($token) use (&$savedToken) {
+            ->willReturnCallback(function ($token) use (&$savedToken) {
                 $savedToken = $token;
-            }))
+            })
         ;
 
         $client = new Client();
@@ -364,20 +364,20 @@ class OAuthStorageTest extends TestCase
         $hasher->expects($this->once())
             ->method('verify')
             ->with('baz')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $this->userProvider->expects($this->once())
             ->method('loadUserByIdentifier')
             ->with('Joe')
-            ->will($this->returnValue($user))
+            ->willReturn($user)
         ;
 
         $this->passwordHasherFactory
             //->expects($this->any())
             ->method('getPasswordHasher')
             ->with($user)
-            ->will($this->returnValue($hasher))
+            ->willReturn($hasher)
         ;
 
         $this->assertSame([
@@ -398,19 +398,19 @@ class OAuthStorageTest extends TestCase
         $hasher->expects($this->once())
             ->method('verify')
             ->with('baz')
-            ->will($this->returnValue(false))
+            ->willReturn(false)
         ;
 
         $this->userProvider->expects($this->once())
             ->method('loadUserByIdentifier')
             ->with('Joe')
-            ->will($this->returnValue($user))
+            ->willReturn($user)
         ;
 
         $this->passwordHasherFactory->expects($this->once())
             ->method('getPasswordHasher')
             ->with($user)
-            ->will($this->returnValue($hasher))
+            ->willReturn($hasher)
         ;
 
         $this->assertFalse($this->storage->checkUserCredentials($client, 'Joe', 'baz'));
@@ -447,13 +447,13 @@ class OAuthStorageTest extends TestCase
         $this->authCodeManager->expects($this->once())
             ->method('createAuthCode')
             ->with()
-            ->will($this->returnValue(new AuthCode()))
+            ->willReturn(new AuthCode())
         ;
         $this->authCodeManager->expects($this->once())
             ->method('updateAuthCode')
-            ->will($this->returnCallback(function ($code) use (&$savedCode) {
+            ->willReturnCallback(function ($code) use (&$savedCode) {
                 $savedCode = $code;
-            }))
+            })
         ;
 
         $client = new Client();
@@ -478,7 +478,7 @@ class OAuthStorageTest extends TestCase
         $this->authCodeManager->expects($this->once())
             ->method('findAuthCodeByToken')
             ->with('123_abc')
-            ->will($this->returnValue($code))
+            ->willReturn($code)
         ;
 
         $this->assertSame($code, $this->storage->getAuthCode('123_abc'));
@@ -489,7 +489,7 @@ class OAuthStorageTest extends TestCase
         $this->authCodeManager->expects($this->once())
             ->method('findAuthCodeByToken')
             ->with('123_abc')
-            ->will($this->returnValue(null))
+            ->willReturn(null)
         ;
 
         $this->assertNull($this->storage->getAuthCode('123_abc'));
@@ -504,7 +504,7 @@ class OAuthStorageTest extends TestCase
         $grantExtension
             ->expects($this->once())
             ->method('checkGrantExtension')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
         $this->storage->setGrantExtension('https://friendsofsymfony.com/grants/foo', $grantExtension);
 
@@ -525,7 +525,7 @@ class OAuthStorageTest extends TestCase
         $grantExtension
             ->expects($this->once())
             ->method('checkGrantExtension')
-            ->will($this->returnValue($grantExtensionData))
+            ->willReturn($grantExtensionData)
         ;
         $this->storage->setGrantExtension('https://friendsofsymfony.com/grants/foo', $grantExtension);
 
@@ -581,13 +581,13 @@ class OAuthStorageTest extends TestCase
         $this->authCodeManager->expects($this->atLeastOnce())
             ->method('findAuthCodeByToken')
             ->with('123_abc')
-            ->will($this->returnValue($authCode))
+            ->willReturn($authCode)
         ;
 
         $this->authCodeManager->expects($this->atLeastOnce())
             ->method('deleteAuthCode')
             ->with($authCode)
-            ->will($this->returnValue(null))
+            ->willReturn(null)
         ;
 
         $this->storage->markAuthCodeAsUsed('123_abc');
@@ -598,7 +598,7 @@ class OAuthStorageTest extends TestCase
         $this->authCodeManager->expects($this->atLeastOnce())
             ->method('findAuthCodeByToken')
             ->with('123_abc')
-            ->will($this->returnValue(null))
+            ->willReturn(null)
         ;
 
         $this->authCodeManager->expects($this->never())

@@ -13,13 +13,12 @@ declare(strict_types=1);
 
 namespace FOS\OAuthServerBundle\Tests\Functional;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 class BootTest extends TestCase
 {
-    /**
-     * @dataProvider getTestBootData
-     *
-     * @param string $env
-     */
+
+    #[DataProvider('getTestBootData')]
     public function testBoot($env): void
     {
         try {

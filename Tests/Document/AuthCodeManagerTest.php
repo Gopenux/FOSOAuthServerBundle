@@ -22,6 +22,8 @@ use FOS\OAuthServerBundle\Document\AuthCode;
 use FOS\OAuthServerBundle\Document\AuthCodeManager;
 use FOS\OAuthServerBundle\Model\AuthCodeInterface;
 use MongoDB\Collection;
+use MongoDB\Driver\WriteResult;
+use MongoDB\DeleteResult;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
@@ -99,17 +101,15 @@ class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('persist')
             ->with($authCode)
-            ->willReturn(null)
         ;
 
         $this->documentManager
             ->expects($this->once())
             ->method('flush')
             ->with()
-            ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->updateAuthCode($authCode));
+        $this->instance->updateAuthCode($authCode);
     }
 
     public function testDeleteAuthCode(): void
@@ -123,17 +123,15 @@ class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('remove')
             ->with($authCode)
-            ->willReturn(null)
         ;
 
         $this->documentManager
             ->expects($this->once())
             ->method('flush')
             ->with()
-            ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->deleteAuthCode($authCode));
+        $this->instance->deleteAuthCode($authCode);
     }
 
     public function testDeleteExpired(): void

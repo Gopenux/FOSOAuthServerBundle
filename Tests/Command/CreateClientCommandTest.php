@@ -16,6 +16,7 @@ namespace FOS\OAuthServerBundle\Tests\Command;
 use FOS\OAuthServerBundle\Command\CreateClientCommand;
 use FOS\OAuthServerBundle\Model\ClientManagerInterface;
 use FOS\OAuthServerBundle\Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -49,18 +50,14 @@ class CreateClientCommandTest extends TestCase
         $this->command = $command;
     }
 
-    /**
-     * @dataProvider clientProvider
-     *
-     * @param string $client a fully qualified class name
-     */
+    #[DataProvider('clientProvider')]
     public function testItShouldCreateClient($client): void
     {
         $this
             ->clientManager
             ->expects($this->any())
             ->method('createClient')
-            ->will($this->returnValue(new $client()))
+            ->willReturn(new $client())
         ;
 
         $commandTester = new CommandTester($this->command);

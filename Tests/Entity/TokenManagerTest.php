@@ -77,7 +77,7 @@ class TokenManagerTest extends TestCase
             ->with()
         ;
 
-        $this->assertNull($this->instance->updateToken($token));
+        $this->instance->updateToken($token);
     }
 
     public function testGetClass(): void
@@ -124,7 +124,7 @@ class TokenManagerTest extends TestCase
             ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->updateToken($token));
+        $this->instance->updateToken($token);
     }
 
     public function testDeleteToken(): void
@@ -138,17 +138,15 @@ class TokenManagerTest extends TestCase
             ->expects($this->once())
             ->method('remove')
             ->with($token)
-            ->willReturn(null)
         ;
 
         $this->entityManager
             ->expects($this->once())
             ->method('flush')
             ->with()
-            ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->deleteToken($token));
+        $this->instance->deleteToken($token);
     }
 
     public function testDeleteExpired(): void
@@ -177,7 +175,7 @@ class TokenManagerTest extends TestCase
         $queryBuilder
             ->expects($this->once())
             ->method('where')
-            ->with('t.expiresAt < ?1')
+            ->with('t.expiresAt < :time')
             ->willReturn($queryBuilder)
         ;
 

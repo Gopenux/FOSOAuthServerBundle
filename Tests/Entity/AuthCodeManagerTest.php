@@ -105,7 +105,7 @@ class AuthCodeManagerTest extends TestCase
             ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->updateAuthCode($authCode));
+        $this->instance->updateAuthCode($authCode);
     }
 
     public function testDeleteAuthCode(): void
@@ -129,7 +129,7 @@ class AuthCodeManagerTest extends TestCase
             ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->deleteAuthCode($authCode));
+        $this->instance->deleteAuthCode($authCode);
     }
 
     public function testDeleteExpired(): void
@@ -170,7 +170,7 @@ class AuthCodeManagerTest extends TestCase
         $queryBuilder
             ->expects($this->once())
             ->method('where')
-            ->with('a.expiresAt < ?1')
+            ->with('a.expiresAt < :time')
             ->willReturn($queryBuilder)
         ;
 
