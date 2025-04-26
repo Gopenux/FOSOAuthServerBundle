@@ -28,7 +28,6 @@ This bundle is under the MIT license. See the complete license in the bundle:
 
 Even if this bundle works perfectly in my professionnal application, I would like to :
 - bring back Travis CI to green
-- make phpunit tests works again
 
 
 ## Credits
