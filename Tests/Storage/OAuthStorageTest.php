@@ -178,7 +178,7 @@ class OAuthStorageTest extends TestCase
 
         $token = $this->storage->createAccessToken('foo', $client, $user, 1, 'foo bar');
 
-        $this->assertSame($token, $savedToken);
+        $this->assertSame($savedToken, $token);
 
         $this->assertSame('foo', $token->getToken());
         $this->assertSame($client, $token->getClient());
@@ -209,7 +209,7 @@ class OAuthStorageTest extends TestCase
 
         $token = $this->storage->createAccessToken('foo', $client, $user, 1, 'foo bar');
 
-        $this->assertSame($token, $savedToken);
+        $this->assertSame($savedToken, $token);
     }
 
     public function testGetRefreshTokenReturnsRefreshTokenWithGivenId(): void
@@ -268,7 +268,7 @@ class OAuthStorageTest extends TestCase
 
         $token = $this->storage->createRefreshToken('foo', $client, $user, 1, 'foo bar');
 
-        $this->assertSame($token, $savedToken);
+        $this->assertSame($savedToken, $token);
 
         $this->assertSame('foo', $token->getToken());
         $this->assertSame($client, $token->getClient());
@@ -299,7 +299,7 @@ class OAuthStorageTest extends TestCase
 
         $token = $this->storage->createRefreshToken('foo', $client, $user, 1, 'foo bar');
 
-        $this->assertSame($token, $savedToken);
+        $this->assertSame($savedToken, $token);
     }
 
     public function testCheckRestrictedGrantTypeThrowsOnInvalidClientClass(): void
@@ -461,7 +461,7 @@ class OAuthStorageTest extends TestCase
 
         $code = $this->storage->createAuthCode('foo', $client, $user, 'http://www.example.com/', 1, 'foo bar');
 
-        $this->assertSame($code, $savedCode);
+        $this->assertSame($savedCode, $code);
 
         $this->assertSame('foo', $code->getToken());
         $this->assertSame($client, $code->getClient());
