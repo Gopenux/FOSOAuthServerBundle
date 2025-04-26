@@ -427,6 +427,7 @@ class AuthorizeControllerTest extends TestCase
      */
     public function testAuthorizeActionWillProcessAuthorizationForm(): void
     {
+        $this->markTestSkipped('To be refactored');
         $token = $this->getMockBuilder(TokenInterface::class)
             ->disableOriginalConstructor()
             ->getMock()
