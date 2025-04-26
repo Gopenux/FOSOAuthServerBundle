@@ -18,17 +18,13 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\BadgeInterface;
 
 class AccessTokenBadge implements BadgeInterface
 {
-    private AccessToken $AccessToken;
-
-    private array $roles;
-
     /**
      * AccessTokenBadge constructor.
      */
-    public function __construct(AccessToken $AccessToken, array $roles)
+    public function __construct(
+        private AccessToken $accessToken,
+        private array $roles)
     {
-        $this->AccessToken = $AccessToken;
-        $this->roles = $roles;
     }
 
     /**
@@ -41,7 +37,7 @@ class AccessTokenBadge implements BadgeInterface
 
     public function getAccessToken(): AccessToken
     {
-        return $this->AccessToken;
+        return $this->accessToken;
     }
 
     public function getRoles(): array
