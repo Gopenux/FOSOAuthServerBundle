@@ -23,11 +23,6 @@
             <directory>./vendor</directory>
         </exclude>
     </source>
-    <coverage>
-        <report>
-            <clover outputFile="phpunit.coverage.xml"/>
-        </report>
-    </coverage>
     <testsuites>
         <testsuite name="OAuth2 Server Tests Suite">
             <directory>./Tests</directory>
