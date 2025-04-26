@@ -172,11 +172,17 @@ class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
         $data = [
             'n' => \random_int( 0, 10),
         ];
+        $deleteResult = $this->getMockBuilder(DeleteResult::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $deleteResult->expects(self::once())
+            ->method('getDeletedCount')
+            ->willReturn($data['n']);
 
         $collection = $this->createMock(Collection::class);
         $collection->expects(self::once())
             ->method('deleteMany')
-            ->willReturn($data)
+            ->willReturn($deleteResult)
         ;
 
         $query = new Query(
@@ -185,7 +191,7 @@ class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
             $collection,
             [
                 'type' => Query::TYPE_REMOVE,
-                'query' => null,
+                'query' => [],
             ],
             [],
             false

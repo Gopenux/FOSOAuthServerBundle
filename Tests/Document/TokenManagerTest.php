@@ -22,6 +22,7 @@ use FOS\OAuthServerBundle\Document\AccessToken;
 use FOS\OAuthServerBundle\Document\TokenManager;
 use FOS\OAuthServerBundle\Model\Token;
 use MongoDB\Collection;
+use MongoDB\DeleteResult;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -170,10 +171,17 @@ class TokenManagerTest extends TestCase
             'n' => \random_int(0, 5),
         ];
 
+        $deleteResult = $this->getMockBuilder(DeleteResult::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $deleteResult->expects(self::once())
+            ->method('getDeletedCount')
+            ->willReturn($data['n']);
+
         $collection = $this->createMock(Collection::class);
         $collection->expects(self::once())
             ->method('deleteMany')
-            ->willReturn($data)
+            ->willReturn($deleteResult)
         ;
 
         $query = new Query(
@@ -182,7 +190,7 @@ class TokenManagerTest extends TestCase
             $collection,
             [
                 'type' => Query::TYPE_REMOVE,
-                'query' => null,
+                'query' => [],
             ],
             [],
             false

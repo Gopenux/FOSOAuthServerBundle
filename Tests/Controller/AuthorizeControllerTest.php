@@ -114,18 +114,7 @@ class AuthorizeControllerTest extends TestCase
             $this->eventDispatcher
         );
 
-        $this->request = $this->getMockBuilder(Request::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $this->requestQuery = $this->getMockBuilder(ParameterBag::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $this->requestRequest = $this->getMockBuilder(ParameterBag::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+        $this->request = new Request();
         $this->user = $this->getMockBuilder(UserInterface::class)
             ->disableOriginalConstructor()
             ->getMock()
@@ -190,11 +179,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($this->user)
         ;
 
-        $this->request
-                ->expects($this->any())
-                ->method('getSession')
-                ->willReturn($this->session)
-        ;
+        $this->request->setSession($this->session);
 
         $this->session
             ->expects($this->exactly(1))
@@ -270,10 +255,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($this->user)
         ;
 
-        $this->request
-                ->expects($this->any())
-                ->method('getSession')
-                ->willReturn($this->session)
+        $this->request->setSession($this->session);
         ;
 
         $this->session
@@ -303,12 +285,7 @@ class AuthorizeControllerTest extends TestCase
 
         $randomScope = 'scope' . random_bytes(10);
 
-        $this->request
-            ->expects($this->any())
-            ->method('get')
-            ->with('scope', null)
-            ->willReturn($randomScope)
-        ;
+        $this->request->query->set('scope', $randomScope);
 
         $response = new Response();
 
@@ -346,11 +323,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($this->user)
         ;
 
-        $this->request
-            ->expects($this->any())
-            ->method('getSession')
-            ->willReturn($this->session)
-        ;
+        $this->request->setSession($this->session);
 
         $this->session
             ->expects($this->exactly(1))
