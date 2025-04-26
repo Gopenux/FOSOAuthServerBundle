@@ -24,12 +24,6 @@ This bundle is under the MIT license. See the complete license in the bundle:
     Resources/meta/LICENSE
 
 
-## TODO
-
-Even if this bundle works perfectly in my professionnal application, I would like to :
-- bring back Travis CI to green
-
-
 ## Credits
 
 - Arnaud Le Blanc, and [all contributors](https://github.com/klapaudius/FOSOAuthServerBundle/contributors)
