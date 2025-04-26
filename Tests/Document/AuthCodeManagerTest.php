@@ -24,15 +24,15 @@ use FOS\OAuthServerBundle\Model\AuthCodeInterface;
 use MongoDB\Collection;
 use MongoDB\Driver\WriteResult;
 use MongoDB\DeleteResult;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
- * @group time-sensitive
- *
  * Class AuthCodeManagerTest
  *
  * @author Nikola Petkanski <nikola@petkanski.com>
  */
+#[Group('time-sensitive')]
 class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
 {
     protected MockObject|DocumentManager $documentManager;

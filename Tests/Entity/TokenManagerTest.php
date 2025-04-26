@@ -22,16 +22,16 @@ use FOS\OAuthServerBundle\Entity\AccessToken;
 use FOS\OAuthServerBundle\Entity\TokenManager;
 use FOS\OAuthServerBundle\Model\Token;
 use FOS\OAuthServerBundle\Model\TokenInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group time-sensitive
- *
  * Class TokenManagerTest
  *
  * @author Nikola Petkanski <nikola@petkanski.com>
  */
+#[Group('time-sensitive')]
 class TokenManagerTest extends TestCase
 {
     protected MockObject|EntityManagerInterface $entityManager;

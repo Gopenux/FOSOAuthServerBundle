@@ -15,11 +15,10 @@ namespace FOS\OAuthServerBundle\Tests\Model;
 
 use FOS\OAuthServerBundle\Model\Token;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group time-sensitive
- */
+#[Group('time-sensitive')]
 class TokenTest extends TestCase
 {
 

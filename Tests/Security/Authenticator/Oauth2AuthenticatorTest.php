@@ -2,10 +2,10 @@
 
 namespace Security\Authenticator;
 
+use FOS\OAuthServerBundle\Model\Client;
 use FOS\OAuthServerBundle\Model\ClientInterface;
 use FOS\OAuthServerBundle\Security\Authenticator\Oauth2Authenticator;
 use FOS\OAuthServerBundle\Tests\Functional\TestBundle\Entity\AccessToken;
-use FOS\OAuthServerBundle\Tests\Storage\OAuthStorageTest\User;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,6 +44,7 @@ class Oauth2AuthenticatorTest extends TestCase
 
         $this->accessToken = $this->createMock( AccessToken::class );
         $client = $this->createMock( ClientInterface::class );
+        $client->method('getUserIdentifier')->willReturn("phpunit");
         $this->accessToken->method('getClient')->willReturn( $client );
     }
 
@@ -78,9 +79,17 @@ class Oauth2AuthenticatorTest extends TestCase
     public function testAuthenticate(): void
     {
         $request = new Request();
+        $this->serverService
+            ->expects($this->once())
+            ->method('getBearerToken')
+            ->willReturn('token');
 
-        $this->serverService->method('verifyAccessToken')->willReturn($this->accessToken);
-        $this->serverService->method('getBearerToken')->willReturn($this->accessToken);
+        $this->serverService
+            ->expects($this->once())
+            ->method('verifyAccessToken')
+            ->with('token')
+            ->willReturn($this->accessToken)
+        ;
 
         $actual = $this->authenticator->authenticate($request);
 

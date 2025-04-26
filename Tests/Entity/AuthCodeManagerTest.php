@@ -21,16 +21,16 @@ use Doctrine\Persistence\ObjectRepository;
 use FOS\OAuthServerBundle\Document\AuthCode;
 use FOS\OAuthServerBundle\Entity\AuthCodeManager;
 use FOS\OAuthServerBundle\Model\AuthCodeInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group time-sensitive
- *
  * Class AuthCodeManagerTest
  *
  * @author Nikola Petkanski <nikola@petkanski.com>
  */
+#[Group('time-sensitive')]
 class AuthCodeManagerTest extends TestCase
 {
     protected MockObject|EntityManagerInterface $entityManager;

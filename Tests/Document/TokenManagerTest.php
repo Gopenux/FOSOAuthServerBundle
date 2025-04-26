@@ -23,16 +23,16 @@ use FOS\OAuthServerBundle\Document\TokenManager;
 use FOS\OAuthServerBundle\Model\Token;
 use MongoDB\Collection;
 use MongoDB\DeleteResult;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group time-sensitive
- *
  * Class TokenManagerTest
  *
  * @author Nikola Petkanski <nikola@petkanski.com>
  */
+#[Group('time-sensitive')]
 class TokenManagerTest extends TestCase
 {
     protected string $className;
