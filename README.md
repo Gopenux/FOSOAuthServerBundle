@@ -1,7 +1,7 @@
 FOSOAuthServerBundle
 ====================
 
-#### Branches : 5.0 [![Build Status](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=5.0)](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=5.0) 4.0 [![Build Status](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=4.0)](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=4.0) 3.0 [![Build Status](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=3.0)](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=3.0)
+#### Branches : 5.0 [![Tests](https://github.com/klapaudius/FOSOAuthServerBundle/actions/workflows/php.yml/badge.svg)](https://github.com/klapaudius/FOSOAuthServerBundle/actions/workflows/php.yml) 4.0 [![Build Status](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=4.0)](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=4.0) 3.0 [![Build Status](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=3.0)](https://app.travis-ci.com/klapaudius/FOSOAuthServerBundle.svg?branch=3.0)
 
 
 ## Documentation
