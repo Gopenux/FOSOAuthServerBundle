@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace FOS\OAuthServerBundle\Tests\Model;
 
 use FOS\OAuthServerBundle\Model\Token;
-use FOS\OAuthServerBundle\Tests\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group time-sensitive
