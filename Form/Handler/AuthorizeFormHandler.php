@@ -79,7 +79,7 @@ class AuthorizeFormHandler
     {
         $request = $this->getCurrentRequest();
 
-        if ('POST' !== $request?->getMethod()) {
+        if (null === $request) {
             return false;
         }
 
@@ -87,6 +87,10 @@ class AuthorizeFormHandler
             $request->request->has('accepted'),
             $request->query->all()
         ));
+
+        if ('POST' !== $request->getMethod()) {
+            return false;
+        }
 
         $this->form->handleRequest($request);
         if ($this->form->isSubmitted() && !$this->form->isValid()) {

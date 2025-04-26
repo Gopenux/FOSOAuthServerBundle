@@ -427,7 +427,6 @@ class AuthorizeControllerTest extends TestCase
      */
     public function testAuthorizeActionWillProcessAuthorizationForm(): void
     {
-        $this->markTestSkipped('To be refactored');
         $token = $this->getMockBuilder(TokenInterface::class)
             ->disableOriginalConstructor()
             ->getMock()
@@ -444,12 +443,8 @@ class AuthorizeControllerTest extends TestCase
             ->method('getUser')
             ->willReturn($this->user)
         ;
-
-        $this->request
-                ->expects($this->any())
-                ->method('getSession')
-                ->willReturn($this->session)
-        ;
+        $this->request->setSession($this->session);
+        $this->request->setMethod("POST");
 
         $this->session
             ->method('get')
@@ -499,19 +494,6 @@ class AuthorizeControllerTest extends TestCase
             ->expects($this->once())
             ->method('getName')
             ->willReturn($formName)
-        ;
-
-        $this->requestQuery
-            ->expects($this->once())
-            ->method('all')
-            ->willReturn([])
-        ;
-
-        $this->requestRequest
-            ->expects($this->once())
-            ->method('has')
-            ->with($formName)
-            ->willReturn(true)
         ;
 
         $randomScope = 'scope'. random_bytes(10);

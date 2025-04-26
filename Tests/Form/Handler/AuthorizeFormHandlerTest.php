@@ -32,7 +32,6 @@ class AuthorizeFormHandlerTest extends TestCase
 {
     protected FormInterface|MockObject $form;
     protected Request|MockObject $request;
-    protected ParameterBag|MockObject $requestQuery;
     protected ParameterBag|MockObject $requestRequest;
     protected ContainerInterface|MockObject $container;
     protected AuthorizeFormHandler $instance;
@@ -43,21 +42,8 @@ class AuthorizeFormHandlerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock()
         ;
-        $request = $this->getMockBuilder(Request::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $this->requestQuery = $this->getMockBuilder(ParameterBag::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $this->requestRequest = $this->getMockBuilder(ParameterBag::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-//        $request->query = $this->requestQuery;
-//        $request->request = $this->requestRequest;
-        $this->request = $request;
+        $this->request = new Request();
+
         $this->container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock()
@@ -233,25 +219,14 @@ class AuthorizeFormHandlerTest extends TestCase
 
     public function testProcessWillSetFormData(): void
     {
-        $this->markTestSkipped('To be refactored');
-        $this->requestRequest
-            ->expects($this->once())
-            ->method('has')
-            ->with('accepted')
-            ->willReturn(true)
-        ;
+        $this->request->request->set('accepted', true);
 
         $dataMock = [
             \random_bytes(10),
             \random_bytes(10),
         ];
-
-        $this->requestQuery
-            ->expects($this->once())
-            ->method('all')
-            ->with()
-            ->willReturn($dataMock)
-        ;
+        $this->request->query->set( "0", $dataMock[0]);
+        $this->request->query->set( "1", $dataMock[1]);
 
         $this->form
             ->expects($this->once())
@@ -261,6 +236,14 @@ class AuthorizeFormHandlerTest extends TestCase
                 $dataMock
             ))
             ->willReturn($this->form)
+        ;
+        $this->form
+            ->expects($this->never())
+            ->method('isSubmitted')
+        ;
+        $this->form
+            ->expects($this->never())
+            ->method('isValid')
         ;
 
         $this->assertFalse($this->instance->process());
@@ -268,25 +251,15 @@ class AuthorizeFormHandlerTest extends TestCase
 
     public function testProcessWillHandleRequestOnPost(): void
     {
-        $this->markTestSkipped('To be refactored');
-        $this->requestRequest
-            ->expects($this->once())
-            ->method('has')
-            ->with('accepted')
-            ->willReturn(true)
-        ;
+        $this->request->request->set('accepted', true);
+        $this->request->setMethod('POST');
 
         $dataMock = [
             \random_bytes(10),
             \random_bytes(10),
         ];
-
-        $this->requestQuery
-            ->expects($this->once())
-            ->method('all')
-            ->with()
-            ->willReturn($dataMock)
-        ;
+        $this->request->query->set( "0", $dataMock[0]);
+        $this->request->query->set( "1", $dataMock[1]);
 
         $this->form
             ->expects($this->once())
@@ -296,13 +269,6 @@ class AuthorizeFormHandlerTest extends TestCase
                 $dataMock
             ))
             ->willReturn($this->form)
-        ;
-
-        $this->request
-            ->expects($this->once())
-            ->method('getMethod')
-            ->with()
-            ->willReturn('POST')
         ;
 
         $this->form
@@ -331,13 +297,8 @@ class AuthorizeFormHandlerTest extends TestCase
 
     public function testProcessWillHandleRequestOnPostAndWillProcessDataIfFormIsValid(): void
     {
-        $this->markTestSkipped('To be refactored');
-        $this->requestRequest
-            ->expects($this->once())
-            ->method('has')
-            ->with('accepted')
-            ->willReturn(true)
-        ;
+        $this->request->request->set('accepted', true);
+        $this->request->setMethod('POST');
 
         $query = new \stdClass();
         $query->client_id = \random_bytes(10);
@@ -345,13 +306,9 @@ class AuthorizeFormHandlerTest extends TestCase
         $query->redirect_uri = \random_bytes(10);
         $query->state = \random_bytes(10);
         $query->scope = \random_bytes(10);
-
-        $this->requestQuery
-            ->expects($this->once())
-            ->method('all')
-            ->with()
-            ->willReturn((array) $query)
-        ;
+        foreach ($query as $key => $value) {
+            $this->request->query->set($key, $value);
+        }
 
         $formData = new Authorize(
             true,
@@ -363,13 +320,6 @@ class AuthorizeFormHandlerTest extends TestCase
             ->method('setData')
             ->with($formData)
             ->willReturn($this->form)
-        ;
-
-        $this->request
-            ->expects($this->once())
-            ->method('getMethod')
-            ->with()
-            ->willReturn('POST')
         ;
 
         $this->form
