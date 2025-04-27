@@ -37,6 +37,8 @@ jobs:
 
     - name: Run test suite
       uses: php-actions/phpunit@v3
+      env:
+        XDEBUG_MODE: coverage
       with:
         php_extensions: "xdebug"
         coverage_clover: "coverage/clover.xml"
