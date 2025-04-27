@@ -28,5 +28,10 @@
             <directory>./Tests</directory>
         </testsuite>
     </testsuites>
+    <coverage>
+        <report>
+            <cobertura outputFile="coverage/coverage.cobertura.xml"/>
+        </report>
+    </coverage>
 </phpunit>
 
