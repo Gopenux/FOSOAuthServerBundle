@@ -42,82 +42,21 @@ use Twig\Error\SyntaxError;
  */
 class AuthorizeController
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
-
-    /**
-     * @var Form
-     */
-    private $authorizeForm;
-
-    /**
-     * @var AuthorizeFormHandler
-     */
-    private $authorizeFormHandler;
-
-    /**
-     * @var OAuth2
-     */
-    private $oAuth2Server;
-
-    /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $router;
-
-    /**
-     * @var ClientManagerInterface
-     */
-    private $clientManager;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private ClientInterface $client;
 
     /**
      * This controller had been made as a service due to support symfony 4 where all* services are private by default.
      * Thus, this is considered a bad practice to fetch services directly from container.
-     *
-     * @todo This controller could be refactored to not rely on so many dependencies
      */
     public function __construct(
-        RequestStack $requestStack,
-        Form $authorizeForm,
-        AuthorizeFormHandler $authorizeFormHandler,
-        OAuth2 $oAuth2Server,
-        Environment $twig,
-        TokenStorageInterface $tokenStorage,
-        UrlGeneratorInterface $router,
-        ClientManagerInterface $clientManager,
-        EventDispatcherInterface $eventDispatcher
+        private RequestStack $requestStack,
+        private Form $authorizeForm,
+        private OAuth2 $oAuth2Server,
+        private TokenStorageInterface $tokenStorage,
+        private UrlGeneratorInterface $router,
+        private ClientManagerInterface $clientManager,
+        private EventDispatcherInterface $eventDispatcher
     ) {
-        $this->requestStack = $requestStack;
-        $this->authorizeForm = $authorizeForm;
-        $this->authorizeFormHandler = $authorizeFormHandler;
-        $this->oAuth2Server = $oAuth2Server;
-        $this->twig = $twig;
-        $this->tokenStorage = $tokenStorage;
-        $this->router = $router;
-        $this->clientManager = $clientManager;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -125,7 +64,7 @@ class AuthorizeController
      *
      * @throws OAuth2RedirectException
      */
-    public function authorizeAction(Request $request): Response
+    public function authorizeAction(Request $request, AuthorizeFormHandler $formHandler, Environment $twig): Response
     {
         $user = $this->tokenStorage->getToken()->getUser();
         if (!$user instanceof UserInterface) {
@@ -138,7 +77,6 @@ class AuthorizeController
         }
 
         $form = $this->authorizeForm;
-        $formHandler = $this->authorizeFormHandler;
 
         /** @var OAuthEvent $event */
         $event = $this->eventDispatcher->dispatch(
@@ -161,7 +99,7 @@ class AuthorizeController
             'client' => $this->getClient(),
         ];
 
-        return $this->renderAuthorize($data);
+        return $this->renderAuthorize($data, $twig);
     }
 
     protected function processSuccess(UserInterface $user, AuthorizeFormHandler $formHandler, Request $request): Response
@@ -227,9 +165,9 @@ class AuthorizeController
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    protected function renderAuthorize(array $data): Response
+    protected function renderAuthorize(array $data, Environment $twig): Response
     {
-        $response = $this->twig->render(
+        $response = $twig->render(
             '@FOSOAuthServer/Authorize/authorize.html.twig',
             $data
         );

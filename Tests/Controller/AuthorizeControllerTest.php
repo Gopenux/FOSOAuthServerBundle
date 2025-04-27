@@ -105,9 +105,7 @@ class AuthorizeControllerTest extends TestCase
         $this->instance = new AuthorizeController(
             $this->requestStack,
             $this->form,
-            $this->authorizeFormHandler,
             $this->oAuth2Server,
-            $this->twig,
             $this->tokenStorage,
             $this->router,
             $this->clientManager,
@@ -157,7 +155,7 @@ class AuthorizeControllerTest extends TestCase
         $this->expectException(AccessDeniedException::class);
         $this->expectExceptionMessage('This user does not have access to this section.');
 
-        $this->instance->authorizeAction($this->request);
+        $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig);
     }
 
     public function testAuthorizeActionWillRenderTemplate(): void
@@ -233,7 +231,7 @@ class AuthorizeControllerTest extends TestCase
         ;
 
         $response = new Response();
-        $this->assertEquals($response, $this->instance->authorizeAction($this->request));
+        $this->assertEquals($response, $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig));
     }
 
     public function testAuthorizeActionWillFinishClientAuthorization(): void
@@ -301,7 +299,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($response)
         ;
 
-        $this->assertSame($response, $this->instance->authorizeAction($this->request));
+        $this->assertSame($response, $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig));
     }
 
     public function testAuthorizeActionWillEnsureLogout(): void
@@ -391,7 +389,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn("")
         ;
 
-        $this->assertEquals($response, $this->instance->authorizeAction($this->request));
+        $this->assertEquals($response, $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig));
     }
 
     /**
@@ -491,6 +489,6 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($response)
         ;
 
-        $this->assertSame($response, $this->instance->authorizeAction($this->request));
+        $this->assertSame($response, $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig));
     }
 }
