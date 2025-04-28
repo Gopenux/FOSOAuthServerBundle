@@ -1,3 +1,5 @@
+lang: "de"
+title: "Authentifizierung"
 authorize:
-    accept: Erlauben
-    reject: Verweigern
+    accept: "Erlauben"
+    reject: "Verweigern"

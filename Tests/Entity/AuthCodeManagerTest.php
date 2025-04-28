@@ -21,16 +21,16 @@ use Doctrine\Persistence\ObjectRepository;
 use FOS\OAuthServerBundle\Document\AuthCode;
 use FOS\OAuthServerBundle\Entity\AuthCodeManager;
 use FOS\OAuthServerBundle\Model\AuthCodeInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group time-sensitive
- *
  * Class AuthCodeManagerTest
  *
  * @author Nikola Petkanski <nikola@petkanski.com>
  */
+#[Group('time-sensitive')]
 class AuthCodeManagerTest extends TestCase
 {
     protected MockObject|EntityManagerInterface $entityManager;
@@ -105,7 +105,7 @@ class AuthCodeManagerTest extends TestCase
             ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->updateAuthCode($authCode));
+        $this->instance->updateAuthCode($authCode);
     }
 
     public function testDeleteAuthCode(): void
@@ -129,7 +129,7 @@ class AuthCodeManagerTest extends TestCase
             ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->deleteAuthCode($authCode));
+        $this->instance->deleteAuthCode($authCode);
     }
 
     public function testDeleteExpired(): void

@@ -14,19 +14,15 @@ declare(strict_types=1);
 namespace FOS\OAuthServerBundle\Tests\Model;
 
 use FOS\OAuthServerBundle\Model\Token;
-use FOS\OAuthServerBundle\Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
 
-/**
- * @group time-sensitive
- */
+#[Group('time-sensitive')]
 class TokenTest extends TestCase
 {
-    /**
-     * @dataProvider getTestHasExpiredData
-     *
-     * @param mixed $expiresAt
-     * @param mixed $expect
-     */
+
+    #[DataProvider('getTestHasExpiredData')]
     public function testHasExpired($expiresAt, $expect): void
     {
         $token = new Token();

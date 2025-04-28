@@ -105,27 +105,14 @@ class AuthorizeControllerTest extends TestCase
         $this->instance = new AuthorizeController(
             $this->requestStack,
             $this->form,
-            $this->authorizeFormHandler,
             $this->oAuth2Server,
-            $this->twig,
             $this->tokenStorage,
             $this->router,
             $this->clientManager,
             $this->eventDispatcher
         );
 
-        $this->request = $this->getMockBuilder(Request::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $this->requestQuery = $this->getMockBuilder(ParameterBag::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $this->requestRequest = $this->getMockBuilder(ParameterBag::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+        $this->request = new Request();
         $this->user = $this->getMockBuilder(UserInterface::class)
             ->disableOriginalConstructor()
             ->getMock()
@@ -168,7 +155,7 @@ class AuthorizeControllerTest extends TestCase
         $this->expectException(AccessDeniedException::class);
         $this->expectExceptionMessage('This user does not have access to this section.');
 
-        $this->instance->authorizeAction($this->request);
+        $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig);
     }
 
     public function testAuthorizeActionWillRenderTemplate(): void
@@ -190,11 +177,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($this->user)
         ;
 
-        $this->request
-                ->expects($this->any())
-                ->method('getSession')
-                ->willReturn($this->session)
-        ;
+        $this->request->setSession($this->session);
 
         $this->session
             ->expects($this->exactly(1))
@@ -248,7 +231,7 @@ class AuthorizeControllerTest extends TestCase
         ;
 
         $response = new Response();
-        $this->assertEquals($response, $this->instance->authorizeAction($this->request));
+        $this->assertEquals($response, $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig));
     }
 
     public function testAuthorizeActionWillFinishClientAuthorization(): void
@@ -270,10 +253,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($this->user)
         ;
 
-        $this->request
-                ->expects($this->any())
-                ->method('getSession')
-                ->willReturn($this->session)
+        $this->request->setSession($this->session);
         ;
 
         $this->session
@@ -303,12 +283,7 @@ class AuthorizeControllerTest extends TestCase
 
         $randomScope = 'scope' . random_bytes(10);
 
-        $this->request
-            ->expects($this->any())
-            ->method('get')
-            ->with('scope', null)
-            ->willReturn($randomScope)
-        ;
+        $this->request->query->set('scope', $randomScope);
 
         $response = new Response();
 
@@ -324,7 +299,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($response)
         ;
 
-        $this->assertSame($response, $this->instance->authorizeAction($this->request));
+        $this->assertSame($response, $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig));
     }
 
     public function testAuthorizeActionWillEnsureLogout(): void
@@ -346,11 +321,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($this->user)
         ;
 
-        $this->request
-            ->expects($this->any())
-            ->method('getSession')
-            ->willReturn($this->session)
-        ;
+        $this->request->setSession($this->session);
 
         $this->session
             ->expects($this->exactly(1))
@@ -418,7 +389,7 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn("")
         ;
 
-        $this->assertEquals($response, $this->instance->authorizeAction($this->request));
+        $this->assertEquals($response, $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig));
     }
 
     /**
@@ -443,12 +414,8 @@ class AuthorizeControllerTest extends TestCase
             ->method('getUser')
             ->willReturn($this->user)
         ;
-
-        $this->request
-                ->expects($this->any())
-                ->method('getSession')
-                ->willReturn($this->session)
-        ;
+        $this->request->setSession($this->session);
+        $this->request->setMethod("POST");
 
         $this->session
             ->method('get')
@@ -460,14 +427,17 @@ class AuthorizeControllerTest extends TestCase
         $propertyReflection->setAccessible(true);
         $propertyReflection->setValue($this->instance, $this->client);
 
-
+        $invocations = [
+            [ new OAuthEvent($this->user, $this->client), OAuthEvent::PRE_AUTHORIZATION_PROCESS ],
+            [ new OAuthEvent($this->user, $this->client, true), OAuthEvent::POST_AUTHORIZATION_PROCESS ]
+        ];
         $this->eventDispatcher
-            ->expects($this->exactly(2))
+            ->expects($matcher = $this->exactly(count($invocations)))
             ->method('dispatch')
-            ->withConsecutive(
-                [ new OAuthEvent($this->user, $this->client), OAuthEvent::PRE_AUTHORIZATION_PROCESS ],
-                [ new OAuthEvent($this->user, $this->client, true), OAuthEvent::POST_AUTHORIZATION_PROCESS ]
-            )
+            ->with( $this->callback( function ( ...$args ) use ( &$invocations, $matcher ) {
+                $this->assertEquals( $args, $invocations[$matcher->numberOfInvocations()-1] );
+                return true;
+            } ) )
             ->willReturn($this->event)
         ;
 
@@ -497,19 +467,6 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($formName)
         ;
 
-        $this->requestQuery
-            ->expects($this->once())
-            ->method('all')
-            ->willReturn([])
-        ;
-
-        $this->requestRequest
-            ->expects($this->once())
-            ->method('has')
-            ->with($formName)
-            ->willReturn(true)
-        ;
-
         $randomScope = 'scope'. random_bytes(10);
 
         $this->authorizeFormHandler
@@ -532,6 +489,6 @@ class AuthorizeControllerTest extends TestCase
             ->willReturn($response)
         ;
 
-        $this->assertSame($response, $this->instance->authorizeAction($this->request));
+        $this->assertSame($response, $this->instance->authorizeAction($this->request, $this->authorizeFormHandler, $this->twig));
     }
 }

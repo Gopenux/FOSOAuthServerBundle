@@ -22,16 +22,16 @@ use FOS\OAuthServerBundle\Entity\AccessToken;
 use FOS\OAuthServerBundle\Entity\TokenManager;
 use FOS\OAuthServerBundle\Model\Token;
 use FOS\OAuthServerBundle\Model\TokenInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group time-sensitive
- *
  * Class TokenManagerTest
  *
  * @author Nikola Petkanski <nikola@petkanski.com>
  */
+#[Group('time-sensitive')]
 class TokenManagerTest extends TestCase
 {
     protected MockObject|EntityManagerInterface $entityManager;
@@ -77,7 +77,7 @@ class TokenManagerTest extends TestCase
             ->with()
         ;
 
-        $this->assertNull($this->instance->updateToken($token));
+        $this->instance->updateToken($token);
     }
 
     public function testGetClass(): void
@@ -124,7 +124,7 @@ class TokenManagerTest extends TestCase
             ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->updateToken($token));
+        $this->instance->updateToken($token);
     }
 
     public function testDeleteToken(): void
@@ -138,17 +138,15 @@ class TokenManagerTest extends TestCase
             ->expects($this->once())
             ->method('remove')
             ->with($token)
-            ->willReturn(null)
         ;
 
         $this->entityManager
             ->expects($this->once())
             ->method('flush')
             ->with()
-            ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->deleteToken($token));
+        $this->instance->deleteToken($token);
     }
 
     public function testDeleteExpired(): void

@@ -17,6 +17,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use FOS\OAuthServerBundle\Model\TokenInterface;
 use FOS\OAuthServerBundle\Model\TokenManager as BaseTokenManager;
+use MongoDB\DeleteResult;
 
 class TokenManager extends BaseTokenManager
 {
@@ -94,6 +95,6 @@ class TokenManager extends BaseTokenManager
             ->execute()
         ;
 
-        return $result['n'];
+        return $result instanceof DeleteResult ? $result->getDeletedCount() : $result['n'];
     }
 }

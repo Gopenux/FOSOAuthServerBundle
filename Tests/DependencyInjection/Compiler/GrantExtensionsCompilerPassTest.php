@@ -90,7 +90,7 @@ class GrantExtensionsCompilerPassTest extends \PHPUnit\Framework\TestCase
             ->willReturn($resolvedClassName)
         ;
 
-        $this->assertNull($this->instance->process($container));
+        $this->instance->process($container);
     }
 
     public function testProcessWillFailIfUriIsEmpty(): void
@@ -166,35 +166,37 @@ class GrantExtensionsCompilerPassTest extends \PHPUnit\Framework\TestCase
 
         $exceptionMessage = 'Service "%s" must define the "uri" attribute on "fos_oauth_server.grant_extension" tags.';
 
-        $idx = 0;
-        $args = [];
+        $invocations = [];
         foreach ($data as $id => $tags) {
             foreach ($tags as $tag) {
                 if (empty($tag['uri'])) {
                     $exceptionMessage = sprintf($exceptionMessage, $id);
                     break;
                 }
-                ++$idx;
-                $args[] = [
+                $invocations[] = [
                     'setGrantExtension',
                     [
                         $tag['uri'],
                         new Reference($id),
-                    ]
+                    ],
+                    false
                 ];
             }
         }
 
         $storageDefinition
-            ->expects($this->exactly($idx))
+            ->expects($matcher = $this->exactly(count($invocations)))
             ->method('addMethodCall')
-            ->withConsecutive(...$args)
+            ->with($this->callback(function (...$args) use ($invocations, $matcher) {
+                $this->assertEquals($args, $invocations[$matcher->numberOfInvocations()-1]);
+                return true;
+            }))
         ;
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
-        $this->assertNull($this->instance->process($container));
+        $this->instance->process($container);
     }
 
     public function testProcess(): void
@@ -279,26 +281,28 @@ class GrantExtensionsCompilerPassTest extends \PHPUnit\Framework\TestCase
             ->willReturn($data)
         ;
 
-        $idx = 0;
-        $args = [];
+        $invocations = [];
         foreach ($data as $id => $tags) {
             foreach ($tags as $tag) {
-                ++$idx;
-                $args[] = [
-                        'setGrantExtension',
-                        [
-                                $tag['uri'],
-                                new Reference($id),
-                        ]
+                $invocations[] = [
+                    'setGrantExtension',
+                    [
+                        $tag['uri'],
+                        new Reference($id),
+                    ],
+                    false
                 ];
             }
         }
         $storageDefinition
-                ->expects($this->exactly($idx))
+                ->expects($matcher = $this->exactly(count($invocations)))
                 ->method('addMethodCall')
-                ->withConsecutive(...$args)
+                ->with($this->callback(function (...$args) use ($invocations, $matcher) {
+                    $this->assertEquals($args, $invocations[$matcher->numberOfInvocations()-1]);
+                    return true;
+                }))
         ;
 
-        $this->assertNull($this->instance->process($container));
+        $this->instance->process($container);
     }
 }

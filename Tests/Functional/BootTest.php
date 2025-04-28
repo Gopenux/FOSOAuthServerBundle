@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace FOS\OAuthServerBundle\Tests\Functional;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+
 class BootTest extends TestCase
 {
-    /**
-     * @dataProvider getTestBootData
-     *
-     * @param string $env
-     */
+
+    #[DataProvider('getTestBootData')]
+    #[RunInSeparateProcess]
     public function testBoot($env): void
     {
         try {

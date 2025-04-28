@@ -160,35 +160,43 @@ class OAuthFactoryTest extends TestCase
             ->willReturn($authManagerLocator)
         ;
 
+        $invocations = [
+            [
+                'security.authenticator.oauth2.'.$id,
+                new $this->childDefinitionClass('fos_oauth_server.security.authenticator.manager'),
+            ],
+            [
+                'security.firewall.authenticator.'.$id,
+                new $this->childDefinitionClass('security.firewall.authenticator'),
+            ],
+            [
+                'security.listener.user_checker.'.$id,
+                new $this->childDefinitionClass('security.listener.user_checker'),
+            ]
+        ];
         $container
-            ->expects($this->exactly(3))
+            ->expects($matcher = $this->exactly(count($invocations)))
             ->method('setDefinition')
-            ->withConsecutive(
-                [
-                    'security.authenticator.oauth2.'.$id,
-                    new $this->childDefinitionClass('fos_oauth_server.security.authenticator.manager'),
-                ],
-                [
-                    'security.firewall.authenticator.'.$id,
-                    new $this->childDefinitionClass('security.firewall.authenticator'),
-                ],
-                [
-                    'security.listener.user_checker.'.$id,
-                    new $this->childDefinitionClass('security.listener.user_checker'),
-                ]
-            )
+            ->with($this->callback(function (...$args) use ($invocations, $matcher) {
+                $this->assertEquals($args, $invocations[$matcher->numberOfInvocations()-1]);
+                return true;
+            }))
             ->willReturn(
                 $definition
             )
         ;
 
+        $invocations = [
+            [0, 'security.authenticator.oauth2.'.$id],
+            [0, 'security.user_checker.'.$id]
+        ];
         $definition
-            ->expects($this->exactly(2))
+            ->expects($matcher = $this->exactly(count($invocations)))
             ->method('replaceArgument')
-            ->withConsecutive(
-                [0, 'security.authenticator.oauth2.'.$id],
-                [0, 'security.user_checker.'.$id],
-            )
+            ->with($this->callback(function (...$args) use ($invocations, $matcher) {
+                $this->assertEquals($args, $invocations[$matcher->numberOfInvocations()-1]);
+                return true;
+            }))
             ->willReturnSelf()
         ;
 

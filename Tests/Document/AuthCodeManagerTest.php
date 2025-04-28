@@ -22,15 +22,17 @@ use FOS\OAuthServerBundle\Document\AuthCode;
 use FOS\OAuthServerBundle\Document\AuthCodeManager;
 use FOS\OAuthServerBundle\Model\AuthCodeInterface;
 use MongoDB\Collection;
+use MongoDB\Driver\WriteResult;
+use MongoDB\DeleteResult;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
- * @group time-sensitive
- *
  * Class AuthCodeManagerTest
  *
  * @author Nikola Petkanski <nikola@petkanski.com>
  */
+#[Group('time-sensitive')]
 class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
 {
     protected MockObject|DocumentManager $documentManager;
@@ -99,17 +101,15 @@ class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('persist')
             ->with($authCode)
-            ->willReturn(null)
         ;
 
         $this->documentManager
             ->expects($this->once())
             ->method('flush')
             ->with()
-            ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->updateAuthCode($authCode));
+        $this->instance->updateAuthCode($authCode);
     }
 
     public function testDeleteAuthCode(): void
@@ -123,17 +123,15 @@ class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('remove')
             ->with($authCode)
-            ->willReturn(null)
         ;
 
         $this->documentManager
             ->expects($this->once())
             ->method('flush')
             ->with()
-            ->willReturn(null)
         ;
 
-        $this->assertNull($this->instance->deleteAuthCode($authCode));
+        $this->instance->deleteAuthCode($authCode);
     }
 
     public function testDeleteExpired(): void
@@ -174,11 +172,17 @@ class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
         $data = [
             'n' => \random_int( 0, 10),
         ];
+        $deleteResult = $this->getMockBuilder(DeleteResult::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $deleteResult->expects(self::once())
+            ->method('getDeletedCount')
+            ->willReturn($data['n']);
 
         $collection = $this->createMock(Collection::class);
         $collection->expects(self::once())
             ->method('deleteMany')
-            ->willReturn($data)
+            ->willReturn($deleteResult)
         ;
 
         $query = new Query(
@@ -187,7 +191,7 @@ class AuthCodeManagerTest extends \PHPUnit\Framework\TestCase
             $collection,
             [
                 'type' => Query::TYPE_REMOVE,
-                'query' => null,
+                'query' => [],
             ],
             [],
             false

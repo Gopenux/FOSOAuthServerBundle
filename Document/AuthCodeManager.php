@@ -17,6 +17,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use FOS\OAuthServerBundle\Model\AuthCodeInterface;
 use FOS\OAuthServerBundle\Model\AuthCodeManager as BaseAuthCodeManager;
+use MongoDB\DeleteResult;
 
 class AuthCodeManager extends BaseAuthCodeManager
 {
@@ -94,6 +95,6 @@ class AuthCodeManager extends BaseAuthCodeManager
             ->execute()
         ;
 
-        return $result['n'];
+        return $result instanceof DeleteResult ? $result->getDeletedCount() : $result['n'];
     }
 }

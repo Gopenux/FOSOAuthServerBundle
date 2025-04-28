@@ -28,10 +28,16 @@ final class LegacyFormHelper
         'FOS\OAuthServerBundle\Form\Type\AuthorizeFormType' => 'fos_oauth_server_authorize',
     ];
 
+    /**
+     * No code needed here the main goal is to make the function private
+     */
     private function __construct()
     {
     }
 
+    /**
+     * No code needed here the main goal is to make the function private
+     */
     private function __clone()
     {
     }
