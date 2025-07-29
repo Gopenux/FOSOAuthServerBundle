@@ -28,7 +28,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 class Oauth2Authenticator extends AbstractAuthenticator
@@ -60,7 +60,7 @@ class Oauth2Authenticator extends AbstractAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function authenticate(Request $request): PassportInterface
+    public function authenticate(Request $request): Passport
     {
         try {
             $tokenString = str_replace('Bearer ', '', $request->headers->get('Authorization'));
@@ -98,7 +98,7 @@ class Oauth2Authenticator extends AbstractAuthenticator
         }
     }
 
-    public function createAuthenticatedToken(PassportInterface $passport, string $firewallName): TokenInterface
+    public function createAuthenticatedToken(Passport $passport, string $firewallName): TokenInterface
     {
         /** @var AccessTokenBadge $accessTokenBadge */
         $accessTokenBadge = $passport->getBadge(AccessTokenBadge::class);
